@@ -9,17 +9,14 @@ const User=require('./models/user');
 
 const app = express();
 
-app.set('view engine', 'ejs');
-app.set('views', 'views');
 
-const adminRoutes = require('./routes/admin');
-const shopRoutes = require('./routes/shop');
+
+const bookRoutes = require('./routes/book');
 
 app.use(bodyParser.urlencoded({ extended: false }));
-app.use(express.static(path.join(__dirname, 'public')));
 
 app.use((req, res, next) => {
-  User.findById("6413a3a3919a92417b44677d")
+  User.findById("6548e2e6f85f6c8bb9066fab")
     .then(user => {
       req.user = user;
       next();
@@ -28,22 +25,19 @@ app.use((req, res, next) => {
 
 });
 
-app.use('/admin', adminRoutes);
-app.use(shopRoutes);
+app.use('/books', bookRoutes);
+
 
 app.use(errorController.get404);
 
 
-mongoose.connect('mongodb+srv://mohit:27mk2002@cluster0.wzw3ecy.mongodb.net/shop?retryWrites=true&w=majority')
+mongoose.connect('mongodb+srv://mohit:27mk2002@cluster0.wzw3ecy.mongodb.net/book?retryWrites=true&w=majority')
 .then(()=>{
   User.findOne().then(user=>{
     if(!user){
       const user=new User({
         name:'Mohit',
-        email:'example123@gmail.com',
-        cart:{
-          items:[]
-        }
+        email:'example123@gmail.com'
       });
       user.save();
     };
