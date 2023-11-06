@@ -8,15 +8,15 @@ const router = express.Router();
 
 
 //  /admin/products => GET
-router.get('/books', bookController.getBooks);
+router.get('/fetch', bookController.getBooks);
 
 // /admin/add-product => POST
 router.post('/add-book', bookController.postAddBook);
 
-router.get('/edit-book/:productId', bookController.getEditBook);
+router.get('/edit-book/:bookId', bookController.getEditBook);
 
-router.post('/edit-book', bookController.postEditBook);
+router.post('/edit-book/:bookId', bookController.postEditBook);
 
-router.post('/delete-book', bookController.postDeleteBook);
+router.delete('/delete-book/:bookId', bookController.postDeleteBook);
 
 module.exports = router;

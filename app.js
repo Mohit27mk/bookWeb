@@ -1,19 +1,18 @@
 const path = require('path');
 
 const express = require('express');
-const bodyParser = require('body-parser');
 const mongoose=require('mongoose');
 
 const errorController = require('./controllers/error');
 const User=require('./models/user');
 
 const app = express();
-
-
+require('dotenv').config();
 
 const bookRoutes = require('./routes/book');
 
-app.use(bodyParser.urlencoded({ extended: false }));
+app.use(express.json()); // Add JSON body parser middleware
+app.use(express.urlencoded({ extended: false })); // Add URL-encoded body parser middleware
 
 app.use((req, res, next) => {
   User.findById("6548e2e6f85f6c8bb9066fab")
@@ -30,11 +29,11 @@ app.use('/books', bookRoutes);
 
 app.use(errorController.get404);
 
-
-mongoose.connect('mongodb+srv://mohit:27mk2002@cluster0.wzw3ecy.mongodb.net/book?retryWrites=true&w=majority')
+//connecting databse
+mongoose.connect(`mongodb+srv://mohit:${process.env.PASSWORD}@cluster0.wzw3ecy.mongodb.net/book?retryWrites=true&w=majority`)
 .then(()=>{
   User.findOne().then(user=>{
-    if(!user){
+    if(!user){//using this user as default 
       const user=new User({
         name:'Mohit',
         email:'example123@gmail.com'
@@ -43,7 +42,12 @@ mongoose.connect('mongodb+srv://mohit:27mk2002@cluster0.wzw3ecy.mongodb.net/book
     };
   });
   
-app.listen(3000);
+app.listen(process.env.PORT);
 }).catch(err=>{
   console.log(err);
 })
+
+mongoose.connection.on('disconnected', () => {
+  // Handle disconnect event, e.g., attempt to reconnect
+  mongoose.connect('mongodb://localhost:27017/yourdb');
+});
